@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
   };
 
   late stt.SpeechToText _speech;
-  bool _isListening = false;
+  bool _isListening = true;
   String _text = 'Press the button and start speaking';
   double _confidence = 1.0;
 
