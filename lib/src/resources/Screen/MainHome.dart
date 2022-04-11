@@ -21,27 +21,9 @@ class MainHome extends StatefulWidget {
 }
 
 class _MainHomeState extends State<MainHome> {
-  final Map<String, HighlightedWord> _highlights = {
-    'giọng nói': HighlightedWord(
-      onTap: () => print('giọng nói'),
-      textStyle: const TextStyle(
-        color: Colors.blue,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-    'gợi ý': HighlightedWord(
-      onTap: () => print('gợi ý'),
-      textStyle: const TextStyle(
-        color: Colors.green,
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  };
-  late stt.SpeechToText _speech;
-  bool _isListening = true;
   FlutterTts flutterTts = new FlutterTts();
   String text =
-      "Chào mừng bạn đến với ứng dụng đọc báo cho người khiếm thị.Để bắt đầu đọc báo,mời bạn tìm kiếm theo gợi ý hoặc giọng nói";
+      "Chào mừng bạn đến với ứng dụng đọc báo cho người khiếm thị.Để bắt đầu sử dụng vuốt từ trái sang phải để đóng app, vuốt từ phải sang trái để đến trang chủ";
 
   bool isListening = true;
 
@@ -49,8 +31,6 @@ class _MainHomeState extends State<MainHome> {
   void initState() {
     readTutorial(text);
     super.initState();
-    _speech = stt.SpeechToText();
-    toggleRecording();
   }
 
   Future readTutorial(String text) async {
@@ -80,9 +60,8 @@ class _MainHomeState extends State<MainHome> {
               SystemNavigator.pop();
             } else if (details.delta.dx < 0) {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => topic_news()));
+                  MaterialPageRoute(builder: (context) => HomePage()));
               print(Topic.topic.values.elementAt(2));
-
             }
           },
           child: Stack(
@@ -112,8 +91,14 @@ class _MainHomeState extends State<MainHome> {
                     style: kTitle1,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: sizeH * 20),
-                  Center(child: Text(text, style: kBodyText1))
+                  SizedBox(height: sizeH * 15),
+                  Image.asset("assets/images/news.jpg"),
+                  Container(
+                      padding: EdgeInsets.only(left: 30, right: 30),
+                      child: Center(
+                          child: Text(
+                              "Ứng dụng RNB - Hỗ trợ đọc báo cho người khiếm thị",
+                              style: kBodyText1)))
                 ],
               ),
             ],
@@ -122,16 +107,4 @@ class _MainHomeState extends State<MainHome> {
       ),
     );
   }
-
-  Future toggleRecording() => SpeechApi.toggleRecording(
-        onResult: (text) => setState(() => this.text = text),
-        onListening: (isListening) {
-          setState(() => this.isListening = isListening);
-          if (!isListening) {
-            Future.delayed(Duration(seconds: 1), () {
-              Utils.scanText(text);
-            });
-          }
-        },
-      );
 }
