@@ -47,6 +47,8 @@ dependencies:
   webfeed: ^0.7.0
   url_launcher: ^6.0.20
   cached_network_image: ^3.2.0
+  flutter_parse: ^1.0.1
+  html: ^0.15.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +76,7 @@ flutter:
     - assets/images/main_top.png
     - assets/images/main_bottom.png
     - assets/images/background.jpg
+    - assets/images/microphone.png
   fonts:
     - family: Klasik
       fonts:

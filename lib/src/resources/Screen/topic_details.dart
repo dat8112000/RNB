@@ -126,7 +126,7 @@ class _topicDetailsState extends State<topicDetails> {
         final item = _feed.items[index];
         return ListTile(
           title: title(item.title),
-          subtitle: subtitle(item.description.toString()),
+          subtitle: subtitle(item.description.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ' ').toString()),
           // leading: thumbnail(item.enclosure.url),
           trailing: rightIcon(),
           contentPadding: EdgeInsets.all(5.0),

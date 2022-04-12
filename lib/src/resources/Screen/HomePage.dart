@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:highlight_text/highlight_text.dart';
 import 'package:rnb/src/resources/Screen/MainHome.dart';
+import 'package:rnb/src/resources/Screen/search_voice.dart';
 import 'package:rnb/src/resources/Screen/topic_news.dart';
 import 'package:rnb/src/resources/api/speech_api.dart';
 import 'package:rnb/src/resources/widget/substring_highlighted.dart';
@@ -38,16 +39,18 @@ class _HomePageState extends State<HomePage> {
     await flutterTts.speak(text);
   }
 
-  // @override
-  // // void setState(VoidCallback fn) {
-  // //   // TODO: implement setState
-  // //   super.setState(fn);
-  // //   isListening = true;
-  // // }
-
   @override
   Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Text("Trang chủ"),
+        ),
         body: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/microphone.png"),
+              fit: BoxFit.contain,
+            ),
+          ),
           height: double.infinity,
           child: InkWell(
             hoverColor: Colors.red,
@@ -57,7 +60,7 @@ class _HomePageState extends State<HomePage> {
               });
             },
             child: SingleChildScrollView(
-              padding: EdgeInsets.only(top: 50),
+              padding: EdgeInsets.only(top: 10),
               child: SubstringHighlight(
                 text: text,
                 terms: Command.all,
@@ -75,16 +78,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        // floatingActionButton: AvatarGlow(
-        //   animate: isListening,
-        //   endRadius: 75,
-        //   glowColor: Theme.of(context).primaryColor,
-        //   child: FloatingActionButton(
-        //     child: Icon(isListening ? Icons.mic : Icons.mic_none, size: 36),
-        //     onPressed: toggleRecording,
-        //   ),
-        // ),
       );
 
   Future toggleRecording() => SpeechApi.toggleRecording(
@@ -94,14 +87,13 @@ class _HomePageState extends State<HomePage> {
 
           if (!isListening) {
             Future.delayed(Duration(seconds: 1), () {
-              text=text.toLowerCase();
-              if(text.contains(Command.voice)){
+              text = text.toLowerCase();
+              if (text.contains(Command.voice)) {
                 gotoVoice();
-              }
-              else if(text.contains(Command.suggest)){
+              } else if (text.contains(Command.suggest)) {
                 gotoSuggest();
-              }
-              else readTutorial("Vui lòng nhấn lại để nói");
+              } else
+                readTutorial("Vui lòng nhấn lại để nói");
             });
           }
         },
@@ -109,7 +101,7 @@ class _HomePageState extends State<HomePage> {
 
   gotoVoice() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => HomePage()));
+        context, MaterialPageRoute(builder: (context) => searchVoice()));
   }
 
   gotoSuggest() {
