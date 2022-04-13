@@ -55,7 +55,7 @@ class _MainHomeState extends State<MainHome> {
         child: GestureDetector(
           onPanUpdate: (details) {
             print(details);
-            print(details.delta.dx);
+            print(details.delta.dy);
             if (details.delta.dx > 0) {
               SystemNavigator.pop();
             } else if (details.delta.dx < 0) {
