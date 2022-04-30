@@ -14,64 +14,62 @@ class topic_news extends StatefulWidget {
 int _destinationIndex = 0;
 
 class _topic_newsState extends State<topic_news> {
-  FlutterTts flutterTts = new FlutterTts();
+  FlutterTts flutterTts = FlutterTts();
 
   @override
   Widget build(BuildContext context) {
     final _scrollController = ScrollController();
     return Scaffold(
-      body: Container(
-        child: GestureDetector(
-          onDoubleTap: () {
-            setState(() {
-              if (Topic.topic.length - 1 > _destinationIndex) {
-                _destinationIndex++;
-              } else {
-                _destinationIndex = 0;
-              }
-              readTutorial(Topic.topic.keys.elementAt(_destinationIndex));
-            });
-          },
-          onLongPress: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => topicDetails(
-                    link: Topic.topic.values.elementAt(_destinationIndex),
-                  ),
-                ));
-          },
-          child: Center(
-            child: Column(
-              children: <Widget>[
-                Text("Chủ đề"),
-                Expanded(
-                    child: ListView.builder(
-                  controller: _scrollController,
-                  itemCount: Topic.topic.length,
-                  itemBuilder: (context, index) => SizedBox(
-                    child: Card(
-                      color: index == _destinationIndex
-                          ? Colors.amber
-                          : Colors.blueAccent,
-                      child: ListTile(
-                        title: Text(Topic.topic.keys.elementAt(index)),
-                        onLongPress: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => topicDetails(
-                                  link: Topic.topic.values.elementAt(_destinationIndex),
-                                ),
-                              ));
-                        },
-                        trailing: Icon(Icons.volume_up),
-                      ),
+      body: GestureDetector(
+        onDoubleTap: () {
+          setState(() {
+            if (Topic.topic.length - 1 > _destinationIndex) {
+              _destinationIndex++;
+            } else {
+              _destinationIndex = 0;
+            }
+            readTutorial(Topic.topic.keys.elementAt(_destinationIndex));
+          });
+        },
+        onLongPress: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => topicDetails(
+                  link: Topic.topic.values.elementAt(_destinationIndex),
+                ),
+              ));
+        },
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Text("Chủ đề"),
+              Expanded(
+                  child: ListView.builder(
+                controller: _scrollController,
+                itemCount: Topic.topic.length,
+                itemBuilder: (context, index) => SizedBox(
+                  child: Card(
+                    color: index == _destinationIndex
+                        ? Colors.amber
+                        : Colors.blueAccent,
+                    child: ListTile(
+                      title: Text(Topic.topic.keys.elementAt(index)),
+                      onLongPress: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => topicDetails(
+                                link: Topic.topic.values.elementAt(_destinationIndex),
+                              ),
+                            ));
+                      },
+                      trailing: Icon(Icons.volume_up),
                     ),
                   ),
-                ))
-              ],
-            ),
+                ),
+              ))
+            ],
           ),
         ),
       ),

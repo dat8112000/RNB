@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:get/get.dart';
-import 'package:highlight_text/highlight_text.dart';
 import 'package:rnb/src/resources/Screen/HomePage.dart';
-import 'package:rnb/src/resources/Screen/ReadNews.dart';
-import 'package:rnb/src/resources/Screen/topic_news.dart';
-import 'package:rnb/src/resources/api/speech_api.dart';
 import 'package:rnb/src/resources/model/app_styles.dart';
 import 'package:rnb/src/resources/model/size_configs.dart';
 import 'package:rnb/src/resources/model/topic.dart';
@@ -50,7 +45,7 @@ class _MainHomeState extends State<MainHome> {
         decoration: BoxDecoration(
             image: DecorationImage(
           image: AssetImage("assets/images/background.jpg"),
-          fit: BoxFit.cover,
+          fit: BoxFit.scaleDown,
         )),
         child: GestureDetector(
           onPanUpdate: (details) {
@@ -59,6 +54,7 @@ class _MainHomeState extends State<MainHome> {
             if (details.delta.dx > 0) {
               SystemNavigator.pop();
             } else if (details.delta.dx < 0) {
+              flutterTts.stop();
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => HomePage()));
               print(Topic.topic.values.elementAt(2));

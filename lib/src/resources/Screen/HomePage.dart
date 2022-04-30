@@ -1,14 +1,10 @@
-import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:highlight_text/highlight_text.dart';
-import 'package:rnb/src/resources/Screen/MainHome.dart';
 import 'package:rnb/src/resources/Screen/search_voice.dart';
 import 'package:rnb/src/resources/Screen/topic_news.dart';
 import 'package:rnb/src/resources/api/speech_api.dart';
 import 'package:rnb/src/resources/widget/substring_highlighted.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
-
 import '../utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -28,12 +24,14 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    setState(() {
+      String text='Bạn đang ở trang chủ tìm kiếm, để tìm kiếm theo nội dung hoặc chủ đề vui lòng nhấn vào màn hình để nói';
+    });
     readTutorial(text);
-    // toggleRecording();
   }
 
   Future readTutorial(String text) async {
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 3));
     await flutterTts.setLanguage("vi-VN");
     await flutterTts.setPitch(0.8);
     await flutterTts.speak(text);
@@ -41,42 +39,59 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text("Trang chủ"),
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/microphone.png"),
-              fit: BoxFit.contain,
-            ),
-          ),
-          height: double.infinity,
-          child: InkWell(
-            hoverColor: Colors.red,
-            onLongPress: () {
-              setState(() {
-                toggleRecording();
-              });
-            },
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(top: 10),
-              child: SubstringHighlight(
-                text: text,
-                terms: Command.all,
-                textStyle: TextStyle(
-                  fontSize: 32.0,
-                  color: Colors.black,
-                  fontWeight: FontWeight.w400,
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            Positioned(
+                bottom: 0,
+                left: 0,
+                child: Image.asset("assets/images/main_bottom.png", width: 50)),
+            Positioned(
+                top: 0,
+                left: 0,
+                child: Image.asset(
+                  "assets/images/main_top.png",
+                  width: 150,
+                )),
+            Container(
+
+              padding: EdgeInsets.only(top: 50),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/microphone.png"),
+                  fit: BoxFit.contain,
                 ),
-                textStyleHighlight: TextStyle(
-                  fontSize: 32.0,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w400,
+              ),
+              height: double.infinity,
+              width: double.infinity,
+              child: InkWell(
+                hoverColor: Colors.red,
+                onLongPress: () {
+                  setState(() {
+                    flutterTts.stop();
+                    toggleRecording();
+                  });
+                },
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(top: 10),
+                  child: SubstringHighlight(
+                    text: text,
+                    terms: Command.all,
+                    textStyle: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    textStyleHighlight: TextStyle(
+                      fontSize: 20.0,
+                      color: Colors.red,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       );
 
@@ -101,7 +116,7 @@ class _HomePageState extends State<HomePage> {
 
   gotoVoice() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => searchVoice()));
+        context, MaterialPageRoute(builder: (context) => searchVoiceScreen()));
   }
 
   gotoSuggest() {

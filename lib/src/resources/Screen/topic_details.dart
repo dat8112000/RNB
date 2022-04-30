@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:rnb/src/resources/Screen/article.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 import 'package:webfeed/webfeed.dart';
 import 'package:http/http.dart' as http;
@@ -52,7 +53,9 @@ class _topicDetailsState extends State<topicDetails> {
   load() async {
     updateTitle(loadingFeedMsg);
     loadFeed(widget.link).then((result) {
-      if (null == result || result.toString().isEmpty) {
+      if (null == result || result
+          .toString()
+          .isEmpty) {
         updateTitle(feedLoadErrorMsg);
         return;
       }
@@ -60,6 +63,7 @@ class _topicDetailsState extends State<topicDetails> {
       updateTitle(_feed.title);
     });
   }
+
   loadFeed(String link) async {
     try {
       final client = http.Client();
@@ -126,11 +130,16 @@ class _topicDetailsState extends State<topicDetails> {
         final item = _feed.items[index];
         return ListTile(
           title: title(item.title),
-          subtitle: subtitle(item.description.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ' ').toString()),
+          subtitle: subtitle(
+              item.description.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ' ')
+                  .toString()),
+
           // leading: thumbnail(item.enclosure.url),
           trailing: rightIcon(),
           contentPadding: EdgeInsets.all(5.0),
-          onTap: () => {},
+          onTap: () => {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleScreen(link: item.link)))
+        },
         );
       },
     );
@@ -142,7 +151,7 @@ class _topicDetailsState extends State<topicDetails> {
 
   body() {
     return isFeedEmpty()
-        ? Center(
+        ? const Center(
       child: CircularProgressIndicator(),
     )
         : RefreshIndicator(

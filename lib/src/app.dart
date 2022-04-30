@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-
-import 'package:rnb/src/resources/Screen/HomePage.dart';
-import 'package:rnb/src/resources/Screen/MainHome.dart';
-import 'package:rnb/src/resources/Screen/ReadNews.dart';
-import 'package:rnb/src/resources/Screen/search_voice.dart';
+import 'package:rnb/src/resources/Screen/article.dart';
+import 'package:rnb/src/resources/Screen/search_voice_details.dart';
 import 'package:rnb/src/resources/Screen/topic_details.dart';
 import 'package:rnb/src/resources/Screen/topic_news.dart';
-import 'package:rnb/src/resources/model/topic.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -16,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'RNB APP',
       debugShowCheckedModeBanner: false,
-      home: searchVoice(),
+      home: ArticleScreen(link: "https://vnexpress.net/vu-an-ba-nguyen-phuong-hang-co-the-do-mot-co-quan-dieu-tra-4455075.html")
     );
   }
 }
