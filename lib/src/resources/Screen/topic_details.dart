@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:rnb/src/resources/Screen/article.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 import 'package:webfeed/webfeed.dart';
@@ -20,12 +21,14 @@ class topicDetails extends StatefulWidget {
 class _topicDetailsState extends State<topicDetails> {
   var _feed;
   var _title;
+  FlutterTts flutterTts = FlutterTts();
   static const String loadingFeedMsg = 'Loading Feed...';
   static const String feedLoadErrorMsg = 'Error Loading Feed.';
   static const String feedOpenErrorMsg = 'Error Opening Feed.';
   static const String placeholderImg = 'images/no_image.png';
   late GlobalKey<RefreshIndicatorState> _refreshKey;
-
+  int _destinationIndex = 0;
+  final _scrollController = ScrollController();
   updateTitle(title) {
     setState(() {
       _title = title;
@@ -53,9 +56,7 @@ class _topicDetailsState extends State<topicDetails> {
   load() async {
     updateTitle(loadingFeedMsg);
     loadFeed(widget.link).then((result) {
-      if (null == result || result
-          .toString()
-          .isEmpty) {
+      if (null == result || result.toString().isEmpty) {
         updateTitle(feedLoadErrorMsg);
         return;
       }
@@ -125,21 +126,30 @@ class _topicDetailsState extends State<topicDetails> {
 
   list() {
     return ListView.builder(
+      controller: _scrollController,
       itemCount: _feed.items.length,
       itemBuilder: (BuildContext context, int index) {
         final item = _feed.items[index];
-        return ListTile(
-          title: title(item.title),
-          subtitle: subtitle(
-              item.description.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ' ')
-                  .toString()),
+        return Card(
+          color: index == _destinationIndex
+              ? Colors.green
+              : Colors.white,
+          child: ListTile(
+            title: title(item.title),
+            subtitle: subtitle(item.description
+                .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ' ')
+                .toString()),
 
-          // leading: thumbnail(item.enclosure.url),
-          trailing: rightIcon(),
-          contentPadding: EdgeInsets.all(5.0),
-          onTap: () => {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleScreen(link: item.link)))
-        },
+            // leading: thumbnail(item.enclosure.url),
+            trailing: rightIcon(),
+            contentPadding: EdgeInsets.all(5.0),
+            onTap: () => {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ArticleScreen(link: item.link)))
+            },
+          ),
         );
       },
     );
@@ -152,22 +162,54 @@ class _topicDetailsState extends State<topicDetails> {
   body() {
     return isFeedEmpty()
         ? const Center(
-      child: CircularProgressIndicator(),
-    )
+            child: CircularProgressIndicator(),
+          )
         : RefreshIndicator(
-      key: _refreshKey,
-      child: list(),
-      onRefresh: () => load(),
-    );
+            key: _refreshKey,
+            child: list(),
+            onRefresh: () => load(),
+          );
   }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),
       ),
-      body: body(),
+      body: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: GestureDetector(
+          onDoubleTap: () {
+            setState(() {
+              if (_feed.items.length - 1 > _destinationIndex) {
+                _destinationIndex++;
+              } else {
+                _destinationIndex = 0;
+              }
+              // readTutorial(_feed.items[_destinationIndex]);
+            });
+          },
+          onPanUpdate: (details) {
+            if (details.delta.dx > 0) {
+              Navigator.pop(context);
+            } else if (details.delta.dx < 0) {
+              flutterTts.stop();
+              // Navigator.push(
+              //     context, MaterialPageRoute(builder: (context) => MainHome()));
+            }
+          },
+          child: body(),
+        ),
+      ),
     );
+  }
+  Future readTutorial(String text) async {
+    await Future.delayed(const Duration(seconds: 0));
+    await flutterTts.setLanguage("vi-VN");
+    await flutterTts.setPitch(0.7);
+    await flutterTts.speak(text);
   }
 }

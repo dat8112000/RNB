@@ -3,24 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
+import 'package:rnb/src/resources/Screen/article.dart';
 
 import 'HomePage.dart';
 
-class searchVoice extends StatefulWidget {
+class SearchVoice extends StatefulWidget {
   final String voice;
 
-  const searchVoice({Key? key, required this.voice}) : super(key: key);
+  const SearchVoice({Key? key, required this.voice}) : super(key: key);
 
   @override
-  _searchVoiceState createState() => _searchVoiceState();
+  _SearchVoiceState createState() => _SearchVoiceState();
 }
 
-class _searchVoiceState extends State<searchVoice> {
-  @override
-  String result1 = 'Result 1';
-  String result2 = 'Result 2';
-  String result3 = 'Result 3';
-  String linkRequest = "https://timkiem.vnexpress.net/?q=phương+hằng";
+class _SearchVoiceState extends State<SearchVoice> {
+  String link = "https://timkiem.vnexpress.net/?q=";
+  String voice = "";
+  String linkRequest = "";
   var document;
   var responseArticle;
   var chuoi = "";
@@ -39,6 +38,8 @@ class _searchVoiceState extends State<searchVoice> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    voice = widget.voice;
+    linkRequest = link + voice;
     extractData(linkRequest);
   }
 
@@ -50,7 +51,6 @@ class _searchVoiceState extends State<searchVoice> {
         responseArticle = document
             .getElementsByClassName('width_common list-news-subfolder')[0];
         var x = responseArticle.getElementsByTagName("a")[1].attributes['href'];
-        print("--$x");
       });
     }
   }
@@ -78,9 +78,7 @@ class _searchVoiceState extends State<searchVoice> {
                           .trim());
                     });
                   },
-                  onLongPress: () {
-
-                  },
+                  onLongPress: () {},
                   child: Column(
                     children: [
                       Expanded(
@@ -100,8 +98,10 @@ class _searchVoiceState extends State<searchVoice> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const HomePage()));
+                                        builder: (context) => ArticleScreen(
+                                            link: responseArticle
+                                                .getElementsByTagName("a")[1]
+                                                .attributes['href'])));
                               },
                             ),
                           ),

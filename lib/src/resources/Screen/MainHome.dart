@@ -4,9 +4,6 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:rnb/src/resources/Screen/HomePage.dart';
 import 'package:rnb/src/resources/model/app_styles.dart';
 import 'package:rnb/src/resources/model/size_configs.dart';
-import 'package:rnb/src/resources/model/topic.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
-import '../utils.dart';
 
 class MainHome extends StatefulWidget {
   const MainHome({Key? key}) : super(key: key);
@@ -16,7 +13,7 @@ class MainHome extends StatefulWidget {
 }
 
 class _MainHomeState extends State<MainHome> {
-  FlutterTts flutterTts = new FlutterTts();
+  FlutterTts flutterTts = FlutterTts();
   String text =
       "Chào mừng bạn đến với ứng dụng đọc báo cho người khiếm thị.Để bắt đầu sử dụng vuốt từ trái sang phải để đóng app, vuốt từ phải sang trái để đến trang chủ";
 
@@ -29,7 +26,7 @@ class _MainHomeState extends State<MainHome> {
   }
 
   Future readTutorial(String text) async {
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 5));
     await flutterTts.setLanguage("vi-VN");
     await flutterTts.setPitch(0.8);
     await flutterTts.speak(text);
@@ -39,25 +36,22 @@ class _MainHomeState extends State<MainHome> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     double sizeH = SizeConfig.blockSizeH!;
-    double sizeV = SizeConfig.blockSizeV!;
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-          image: AssetImage("assets/images/background.jpg"),
-          fit: BoxFit.scaleDown,
-        )),
+        // decoration: const BoxDecoration(
+        //     image: DecorationImage(
+        //   image: AssetImage("assets/images/background.jpg"),
+        //   fit: BoxFit.cover
+        // )),
         child: GestureDetector(
           onPanUpdate: (details) {
-            print(details);
-            print(details.delta.dy);
             if (details.delta.dx > 0) {
               SystemNavigator.pop();
             } else if (details.delta.dx < 0) {
               flutterTts.stop();
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => HomePage()));
-              print(Topic.topic.values.elementAt(2));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => HomePage()));
             }
           },
           child: Stack(
@@ -87,14 +81,14 @@ class _MainHomeState extends State<MainHome> {
                     style: kTitle1,
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: sizeH * 15),
+                  SizedBox(height: sizeH * 5),
                   Image.asset("assets/images/news.jpg"),
                   Container(
-                      padding: EdgeInsets.only(left: 30, right: 30),
+                      padding: const EdgeInsets.only(left: 30, right: 30),
                       child: Center(
                           child: Text(
-                              "Ứng dụng RNB - Hỗ trợ đọc báo cho người khiếm thị",
-                              style: kBodyText1)))
+                              "Hỗ trợ đọc báo cho người khiếm thị",
+                              style: kBodyText1,textAlign: TextAlign.center,)))
                 ],
               ),
             ],

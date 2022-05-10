@@ -25,7 +25,8 @@ class _HomePageState extends State<HomePage> {
     // TODO: implement initState
     super.initState();
     setState(() {
-      String text='Bạn đang ở trang chủ tìm kiếm, để tìm kiếm theo nội dung hoặc chủ đề vui lòng nhấn vào màn hình để nói';
+      String text =
+          'Bạn đang ở trang chủ tìm kiếm, để tìm kiếm theo nội dung hoặc chủ đề vui lòng nhấn vào màn hình để nói';
     });
     readTutorial(text);
   }
@@ -53,22 +54,22 @@ class _HomePageState extends State<HomePage> {
                   "assets/images/main_top.png",
                   width: 150,
                 )),
-            Container(
-
-              padding: EdgeInsets.only(top: 50),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/microphone.png"),
-                  fit: BoxFit.contain,
-                ),
+            Center(
+              child: Icon(
+                isListening ? Icons.mic : Icons.mic_off,
+                size: 200,
+                color: Colors.red,
               ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 50),
               height: double.infinity,
               width: double.infinity,
               child: InkWell(
                 hoverColor: Colors.red,
                 onLongPress: () {
+                  flutterTts.stop();
                   setState(() {
-                    flutterTts.stop();
                     toggleRecording();
                   });
                 },
@@ -99,7 +100,6 @@ class _HomePageState extends State<HomePage> {
         onResult: (text) => setState(() => this.text = text),
         onListening: (isListening) {
           setState(() => this.isListening = isListening);
-
           if (!isListening) {
             Future.delayed(Duration(seconds: 1), () {
               text = text.toLowerCase();
@@ -116,7 +116,7 @@ class _HomePageState extends State<HomePage> {
 
   gotoVoice() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => searchVoiceScreen()));
+        context, MaterialPageRoute(builder: (context) => SearchVoiceScreen()));
   }
 
   gotoSuggest() {

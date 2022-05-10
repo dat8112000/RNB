@@ -21,7 +21,6 @@ class SpeechApi {
     if (isAvailable) {
       _speech.listen(onResult: (value) => onResult(value.recognizedWords));
     }
-
     return isAvailable;
   }
 }

@@ -4,17 +4,17 @@ import 'package:rnb/src/resources/Screen/search_voice_details.dart';
 import 'package:rnb/src/resources/api/speech_api.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
-class searchVoiceScreen extends StatefulWidget {
-  const searchVoiceScreen({Key? key}) : super(key: key);
+class SearchVoiceScreen extends StatefulWidget {
+  const SearchVoiceScreen({Key? key}) : super(key: key);
 
   @override
-  _searchVoiceScreenState createState() => _searchVoiceScreenState();
+  _SearchVoiceScreenState createState() => _SearchVoiceScreenState();
 }
 
-class _searchVoiceScreenState extends State<searchVoiceScreen> {
+class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
   late stt.SpeechToText _speech;
-  bool _isListening = false;
-  String _text = '';
+  bool isListening = false;
+  String text = '';
   FlutterTts flutterTts = FlutterTts();
 
   @override
@@ -52,34 +52,32 @@ class _searchVoiceScreenState extends State<searchVoiceScreen> {
                 width: 150,
               )),
           Container(
-            padding: EdgeInsets.only(top: 10),
+            padding: const EdgeInsets.only(top: 10),
             height: double.infinity,
             width: double.infinity,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  _text,
-                  style: TextStyle(fontSize: 30, fontFamily: "Lora"),
+                  text,
+                  style: const TextStyle(fontSize: 30, fontFamily: "Lora"),
                 )
               ],
             ),
           ),
-          Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/microphone.png"),
-                  fit: BoxFit.scaleDown,
-                ),
-              ),
+          Center(
+            child: Icon(
+              isListening ? Icons.mic : Icons.mic_off,
+              size: 200,
+              color: Colors.red,
+            ),
+          ),
+          SizedBox(
               width: double.infinity,
               height: double.infinity,
               child: GestureDetector(
                 onLongPress: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => searchVoice(voice: _text)));
+                  toggleRecording();
                 },
               )),
         ],
@@ -88,19 +86,21 @@ class _searchVoiceScreenState extends State<searchVoiceScreen> {
   }
 
   Future toggleRecording() => SpeechApi.toggleRecording(
-        onResult: (text) => setState(() => this._text = text),
+        onResult: (text) => setState(() => this.text = text),
         onListening: (isListening) {
-          setState(() => this._isListening = isListening);
+          setState(() => this.isListening = isListening);
 
-          if (!_isListening) {
-            Future.delayed(Duration(seconds: 1), () {
-              if (_text.isEmpty) {
+          if (!isListening) {
+            Future.delayed(const Duration(seconds: 1), () {
+              if (text.isEmpty) {
                 readTutorial("Vui lòng nhấn lại để nói");
               } else {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => searchVoice(voice: _text)));
+                        builder: (context) => SearchVoice(
+                              voice: text,
+                            )));
               }
             });
           }

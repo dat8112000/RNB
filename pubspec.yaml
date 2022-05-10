@@ -77,6 +77,7 @@ flutter:
     - assets/images/main_bottom.png
     - assets/images/background.jpg
     - assets/images/microphone.png
+    - assets/images/search_by_voice.png
   fonts:
     - family: Klasik
       fonts:

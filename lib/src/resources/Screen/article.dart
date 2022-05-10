@@ -22,8 +22,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
   FlutterTts flutterTts = FlutterTts();
 
   void extractData(String linkArticle) async {
-    final response = await http.Client().get(Uri.parse(
-        linkArticle));
+    final response = await http.Client().get(Uri.parse(linkArticle));
     if (response.statusCode == 200) {
       setState(() {
         document = parser.parse(response.body);
@@ -59,24 +58,34 @@ class _ArticleScreenState extends State<ArticleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: InkWell(
+      body: SizedBox(
+        width: double.infinity,
+        height: double.infinity,
+        child: GestureDetector(
+          onPanUpdate: (details) {
+            if (details.delta.dx > 0) {
+              flutterTts.stop();
+              Navigator.pop(context);
+            }
+          },
           onTap: () {
             setState(() {
               playing = !playing;
               if (playing == true) {
                 readArticle(content);
               }
-              if(playing == false){
-                flutterTts.pause();
+              if (playing == false) {
+                flutterTts.stop();
               }
             });
           },
-          child: Icon(
-            playing == false
-                ? Icons.play_circle_outline
-                : Icons.pause_circle_outline,
-            size: 100,
+          child: InkWell(
+            child: Icon(
+              playing == false
+                  ? Icons.play_circle_outline
+                  : Icons.pause_circle_outline,
+              size: 100,
+            ),
           ),
         ),
       ),

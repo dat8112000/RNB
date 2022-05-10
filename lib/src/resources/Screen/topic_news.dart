@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:rnb/src/resources/Screen/MainHome.dart';
 import 'package:rnb/src/resources/Screen/topic_details.dart';
 import 'package:rnb/src/resources/model/topic.dart';
 
@@ -31,6 +32,15 @@ class _topic_newsState extends State<topic_news> {
             readTutorial(Topic.topic.keys.elementAt(_destinationIndex));
           });
         },
+        onPanUpdate: (details) {
+          if (details.delta.dx > 0) {
+            Navigator.pop(context);
+          } else if (details.delta.dx < 0) {
+            flutterTts.stop();
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => MainHome()));
+          }
+        },
         onLongPress: () {
           Navigator.push(
               context,
@@ -43,7 +53,6 @@ class _topic_newsState extends State<topic_news> {
         child: Center(
           child: Column(
             children: <Widget>[
-              Text("Chủ đề"),
               Expanded(
                   child: ListView.builder(
                 controller: _scrollController,
@@ -52,7 +61,7 @@ class _topic_newsState extends State<topic_news> {
                   child: Card(
                     color: index == _destinationIndex
                         ? Colors.amber
-                        : Colors.blueAccent,
+                        : Colors.white,
                     child: ListTile(
                       title: Text(Topic.topic.keys.elementAt(index)),
                       onLongPress: () {
