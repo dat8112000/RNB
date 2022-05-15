@@ -21,11 +21,11 @@ class SubstringHighlight extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (terms.isEmpty) {
-      return Text(text, style: textStyle);
+      return Text(text, style: textStyle,textAlign: TextAlign.center,);
     } else {
       final matchingTerms =
       terms.where((term) => text.toLowerCase().contains(term)).toList();
-      if (matchingTerms.isEmpty) return Text(text, style: textStyle);
+      if (matchingTerms.isEmpty) return Text(text, style: textStyle,textAlign: TextAlign.center);
       final termMatch = matchingTerms.first;
       final termLC = termMatch.toLowerCase();
 

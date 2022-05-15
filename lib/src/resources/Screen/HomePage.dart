@@ -4,7 +4,6 @@ import 'package:rnb/src/resources/Screen/search_voice.dart';
 import 'package:rnb/src/resources/Screen/topic_news.dart';
 import 'package:rnb/src/resources/api/speech_api.dart';
 import 'package:rnb/src/resources/widget/substring_highlighted.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
 import '../utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,7 +31,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future readTutorial(String text) async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 0));
     await flutterTts.setLanguage("vi-VN");
     await flutterTts.setPitch(0.8);
     await flutterTts.speak(text);
@@ -55,21 +54,31 @@ class _HomePageState extends State<HomePage> {
                   width: 150,
                 )),
             Center(
-              child: Icon(
-                isListening ? Icons.mic : Icons.mic_off,
-                size: 200,
-                color: Colors.red,
-              ),
-            ),
+                child: isListening
+                    ? Icon(
+                        Icons.mic,
+                        size: 200,
+                        color: Colors.green,
+                      )
+                    : Icon(
+                        Icons.mic_off,
+                        size: 200,
+                        color: Colors.red,
+                      )),
             Container(
               padding: EdgeInsets.only(top: 50),
               height: double.infinity,
               width: double.infinity,
               child: InkWell(
                 hoverColor: Colors.red,
+                onDoubleTap: (){
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => SearchVoiceScreen()));
+                },
                 onLongPress: () {
                   flutterTts.stop();
                   setState(() {
+                    text = "";
                     toggleRecording();
                   });
                 },
@@ -104,8 +113,14 @@ class _HomePageState extends State<HomePage> {
             Future.delayed(Duration(seconds: 1), () {
               text = text.toLowerCase();
               if (text.contains(Command.voice)) {
+                setState(() {
+                  text = "";
+                });
                 gotoVoice();
               } else if (text.contains(Command.suggest)) {
+                setState(() {
+                  text = "";
+                });
                 gotoSuggest();
               } else
                 readTutorial("Vui lòng nhấn lại để nói");
@@ -121,6 +136,6 @@ class _HomePageState extends State<HomePage> {
 
   gotoSuggest() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => topic_news()));
+        context, MaterialPageRoute(builder: (context) => TopicNews()));
   }
 }

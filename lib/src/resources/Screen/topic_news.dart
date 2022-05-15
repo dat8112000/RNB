@@ -4,17 +4,17 @@ import 'package:rnb/src/resources/Screen/MainHome.dart';
 import 'package:rnb/src/resources/Screen/topic_details.dart';
 import 'package:rnb/src/resources/model/topic.dart';
 
-class topic_news extends StatefulWidget {
-  const topic_news({Key? key}) : super(key: key);
+class TopicNews extends StatefulWidget {
+  const TopicNews({Key? key}) : super(key: key);
   final String title = "Các tin mới nhất";
 
   @override
-  _topic_newsState createState() => _topic_newsState();
+  _TopicNewsState createState() => _TopicNewsState();
 }
 
 int _destinationIndex = 0;
 
-class _topic_newsState extends State<topic_news> {
+class _TopicNewsState extends State<TopicNews> {
   FlutterTts flutterTts = FlutterTts();
 
   @override
@@ -38,7 +38,7 @@ class _topic_newsState extends State<topic_news> {
           } else if (details.delta.dx < 0) {
             flutterTts.stop();
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MainHome()));
+                context, MaterialPageRoute(builder: (context) => const MainHome()));
           }
         },
         onLongPress: () {

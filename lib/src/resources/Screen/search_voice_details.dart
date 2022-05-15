@@ -5,8 +5,6 @@ import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:rnb/src/resources/Screen/article.dart';
 
-import 'HomePage.dart';
-
 class SearchVoice extends StatefulWidget {
   final String voice;
 

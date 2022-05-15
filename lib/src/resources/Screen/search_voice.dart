@@ -66,12 +66,17 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
             ),
           ),
           Center(
-            child: Icon(
-              isListening ? Icons.mic : Icons.mic_off,
-              size: 200,
-              color: Colors.red,
-            ),
-          ),
+              child: isListening
+                  ? Icon(
+                      Icons.mic,
+                      size: 200,
+                      color: Colors.green,
+                    )
+                  : Icon(
+                      Icons.mic_off,
+                      size: 200,
+                      color: Colors.red,
+                    )),
           SizedBox(
               width: double.infinity,
               height: double.infinity,

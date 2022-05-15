@@ -26,7 +26,7 @@ class _MainHomeState extends State<MainHome> {
   }
 
   Future readTutorial(String text) async {
-    await Future.delayed(const Duration(seconds: 5));
+    await Future.delayed(const Duration(seconds: 1));
     await flutterTts.setLanguage("vi-VN");
     await flutterTts.setPitch(0.8);
     await flutterTts.speak(text);
@@ -56,11 +56,12 @@ class _MainHomeState extends State<MainHome> {
           },
           child: Stack(
             children: [
-              Container(
+              SizedBox(
                 height: double.infinity,
                 width: double.infinity,
                 child: Text(""),
               ),
+              Center(child: Image.asset("assets/images/news.jpg")),
               Positioned(
                   bottom: 0,
                   left: 0,
@@ -78,16 +79,15 @@ class _MainHomeState extends State<MainHome> {
                   SizedBox(height: sizeH * 20),
                   Text(
                     "WELCOME TO RNB",
-                    style: kTitle1,
+                    style: TextStyle(fontSize: 40,color: Colors.redAccent,fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: sizeH * 5),
-                  Image.asset("assets/images/news.jpg"),
                   Container(
                       padding: const EdgeInsets.only(left: 30, right: 30),
                       child: Center(
                           child: Text(
-                              "Hỗ trợ đọc báo cho người khiếm thị",
+                              "HỖ TRỢ ĐỌC BÁO CHO NGƯỜI KHIẾM THỊ",
                               style: kBodyText1,textAlign: TextAlign.center,)))
                 ],
               ),

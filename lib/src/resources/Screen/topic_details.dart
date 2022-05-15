@@ -22,7 +22,7 @@ class _topicDetailsState extends State<topicDetails> {
   var _feed;
   var _title;
   FlutterTts flutterTts = FlutterTts();
-  static const String loadingFeedMsg = 'Loading Feed...';
+  static const String loadingFeedMsg = 'Đang tải...';
   static const String feedLoadErrorMsg = 'Error Loading Feed.';
   static const String feedOpenErrorMsg = 'Error Opening Feed.';
   static const String placeholderImg = 'images/no_image.png';
