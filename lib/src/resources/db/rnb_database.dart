@@ -21,7 +21,8 @@ class RnBDatabase {
   }
 
   Future _createDB(Database db, int version) async {
-    final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    // final idType = 'INTEGER PRIMARY KEY AUTOINCREMENT';
+    final idType = 'TEXT PRIMARY KEY';
     final textType = 'TEXT NOT NULL';
     await db.execute('''
 CREATE TABLE $tableArticle ( 
@@ -35,9 +36,9 @@ CREATE TABLE $tableArticle (
 
   Future<Article> create(Article article) async {
     final db = await instance.database;
-
     final id = await db!.insert(tableArticle, article.toJson());
-    return article.copy(id: id);
+    print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+    return article.copy(id: id.toString());
   }
 
   Future<Article> readNote(int id) async {
@@ -60,9 +61,10 @@ CREATE TABLE $tableArticle (
   Future<List<Article>> readAllNotes() async {
     final db = await instance.database;
 
-    final orderBy = '${ArticleFields.title} ASC';
+    final orderBy = '${ArticleFields.date} ASC';
 
-    final result = await db!.query(tableArticle, orderBy: orderBy);
+    final result =
+        await db!.query(tableArticle, orderBy: orderBy, distinct: true);
 
     return result.map((json) => Article.fromJson(json)).toList();
   }

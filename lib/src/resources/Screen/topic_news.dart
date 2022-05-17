@@ -21,6 +21,10 @@ class _TopicNewsState extends State<TopicNews> {
   Widget build(BuildContext context) {
     final _scrollController = ScrollController();
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Chủ đề"),
+        backgroundColor: Colors.blue,
+      ),
       body: GestureDetector(
         onDoubleTap: () {
           setState(() {

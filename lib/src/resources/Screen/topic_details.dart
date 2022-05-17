@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:rnb/src/resources/Screen/article.dart';
@@ -29,6 +28,7 @@ class _topicDetailsState extends State<topicDetails> {
   late GlobalKey<RefreshIndicatorState> _refreshKey;
   int _destinationIndex = 0;
   final _scrollController = ScrollController();
+
   updateTitle(title) {
     setState(() {
       _title = title;
@@ -131,13 +131,11 @@ class _topicDetailsState extends State<topicDetails> {
       itemBuilder: (BuildContext context, int index) {
         final item = _feed.items[index];
         return Card(
-          color: index == _destinationIndex
-              ? Colors.green
-              : Colors.white,
+          color: index == _destinationIndex ? Colors.green : Colors.white,
           child: ListTile(
             title: title(item.title),
             subtitle: subtitle(item.description
-                .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ' ')
+                .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
                 .toString()),
 
             // leading: thumbnail(item.enclosure.url),
@@ -173,7 +171,6 @@ class _topicDetailsState extends State<topicDetails> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text(_title),
@@ -206,6 +203,7 @@ class _topicDetailsState extends State<topicDetails> {
       ),
     );
   }
+
   Future readTutorial(String text) async {
     await Future.delayed(const Duration(seconds: 0));
     await flutterTts.setLanguage("vi-VN");

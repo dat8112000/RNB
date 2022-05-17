@@ -39,6 +39,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: Text("Trang chủ"),
+          backgroundColor: Colors.red,
+        ),
         backgroundColor: Colors.white,
         body: Stack(
           children: [
@@ -66,14 +70,16 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.red,
                       )),
             Container(
-              padding: EdgeInsets.only(top: 50),
+              padding: EdgeInsets.only(top: 20),
               height: double.infinity,
               width: double.infinity,
               child: InkWell(
                 hoverColor: Colors.red,
-                onDoubleTap: (){
+                onDoubleTap: () {
                   Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => SearchVoiceScreen()));
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SearchVoiceScreen()));
                 },
                 onLongPress: () {
                   flutterTts.stop();
@@ -83,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                   });
                 },
                 child: SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: EdgeInsets.only(top: 5, left: 10, right: 10),
                   child: SubstringHighlight(
                     text: text,
                     terms: Command.all,

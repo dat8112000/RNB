@@ -13,7 +13,7 @@ class ArticleFields {
 }
 
 class Article {
-  final int? id;
+  final String? id;//
   final String title;
   final String content;
   final DateTime date;
@@ -26,7 +26,7 @@ class Article {
   });
 
   Article copy({
-    int? id,
+    String? id,//
     String? title,
     String? content,
     DateTime? date,
@@ -39,7 +39,7 @@ class Article {
       );
 
   static Article fromJson(Map<String, Object?> json) => Article(
-        id: json[ArticleFields.id] as int?,
+        id: json[ArticleFields.id] as String?,//
         title: json[ArticleFields.title] as String,
         content: json[ArticleFields.content] as String,
         date: DateTime.parse(json[ArticleFields.date] as String),
