@@ -231,6 +231,9 @@ class _topicDetailsState extends State<topicDetails> {
     );
   }
 
+
+
+  
   Future readTutorial(String text) async {
     await Future.delayed(const Duration(seconds: 0));
     await flutterTts.setLanguage("vi-VN");
