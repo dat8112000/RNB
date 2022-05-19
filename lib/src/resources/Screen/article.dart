@@ -7,8 +7,10 @@ import 'package:rnb/src/resources/model/article_model.dart';
 
 class ArticleScreen extends StatefulWidget {
   final String link;
+  final int indexArticle;
+  final List<String> listLink;
 
-  const ArticleScreen({Key? key, required this.link}) : super(key: key);
+  const ArticleScreen({Key? key, required this.link,required this.listLink,required this.indexArticle}) : super(key: key);
 
   @override
   _ArticleScreenState createState() => _ArticleScreenState();
@@ -24,7 +26,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
   FlutterTts flutterTts = FlutterTts();
   String contentArticle = "";
   List<Article> article = [];
-
+  int indexArticle=0;
   String Date = "";
   late Article currentArticle;
 
@@ -70,6 +72,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    indexArticle=widget.indexArticle;
+    print(widget.listLink.length);
     extractData(widget.link);
   }
 
@@ -116,34 +120,86 @@ class _ArticleScreenState extends State<ArticleScreen> {
           SizedBox(
             width: width,
             height: height / 10,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                if (details.delta.dx > 30) {
-                  flutterTts.stop();
-                  Navigator.pop(context);
-                }
-              },
-              onTap: () async {
-                setState(() {
-                  playing = !playing;
-                  if (playing == true) {
-                    readArticle(content);
-                  }
-                  if (playing == false) {
-                    flutterTts.stop();
-                  }
-                });
-              },
-              child: InkWell(
-                child: Icon(
-                  playing == false ? Icons.play_circle : Icons.pause_circle,
-                  size: height / 10,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                GestureDetector(
+                  onPanUpdate: (details) {
+                    if (details.delta.dx > 30) {
+                      flutterTts.stop();
+                      Navigator.pop(context);
+                    }
+                  },
+                  onTap: () async {
+                    setState(() {
+                      indexArticle--;
+                      refreshArticle();
+                    });
+                  },
+                  child: InkWell(
+                    child: Icon(
+                      Icons.skip_previous,
+                      size: height / 10,
+                    ),
+                  ),
                 ),
-              ),
+                GestureDetector(
+                  onPanUpdate: (details) {
+                    if (details.delta.dx > 30) {
+                      flutterTts.stop();
+                      Navigator.pop(context);
+                    }
+                  },
+                  onTap: () async {
+                    setState(() {
+                      playing = !playing;
+                      if (playing == true) {
+                        readArticle(content);
+                      }
+                      if (playing == false) {
+                        flutterTts.stop();
+                      }
+                    });
+                  },
+                  child: InkWell(
+                    child: Icon(
+                      playing == false ? Icons.play_circle : Icons.pause_circle,
+                      size: height / 10,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onPanUpdate: (details) {
+                    if (details.delta.dx > 30) {
+                      flutterTts.stop();
+                      Navigator.pop(context);
+                    }
+                  },
+                  onTap: () async {
+                    setState(() {
+                      indexArticle++;
+                      refreshArticle();
+                    });
+                  },
+                  child: InkWell(
+                    child: Icon(
+                      Icons.skip_next,
+                      size: height / 10,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
+  }
+  refreshArticle(){
+    setState(() {
+      contentArticle="";
+      content=[];
+      extractData(widget.listLink[indexArticle]);
+    });
   }
 }

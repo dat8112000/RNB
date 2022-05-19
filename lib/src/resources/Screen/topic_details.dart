@@ -20,6 +20,8 @@ class topicDetails extends StatefulWidget {
 class _topicDetailsState extends State<topicDetails> {
   var _feed;
   var _title;
+  List<String> listLink = [];
+  bool checkIndex = false;
   FlutterTts flutterTts = FlutterTts();
   static const String loadingFeedMsg = 'Đang tải...';
   static const String feedLoadErrorMsg = 'Error Loading Feed.';
@@ -81,6 +83,7 @@ class _topicDetailsState extends State<topicDetails> {
     super.initState();
     _refreshKey = GlobalKey<RefreshIndicatorState>();
     updateTitle(widget.link);
+
     load();
   }
 
@@ -137,16 +140,18 @@ class _topicDetailsState extends State<topicDetails> {
             subtitle: subtitle(item.description
                 .replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), '')
                 .toString()),
-
             // leading: thumbnail(item.enclosure.url),
             trailing: rightIcon(),
             contentPadding: EdgeInsets.all(5.0),
-            onTap: () => {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ArticleScreen(link: item.link)))
-            },
+            // onTap: () => {
+            //   Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) => ArticleScreen(
+            //                 link: _feed.items[_destinationIndex].link,
+            //                 listLink: listLink,
+            //               )))
+            // },
           ),
         );
       },
@@ -181,13 +186,35 @@ class _topicDetailsState extends State<topicDetails> {
         child: GestureDetector(
           onDoubleTap: () {
             setState(() {
-              if (_feed.items.length - 1 > _destinationIndex) {
+              checkIndex==true;
+              if (_feed.items.length - 1 > _destinationIndex ) {
                 _destinationIndex++;
+                if (listLink.length < _feed.items.length&&
+                    checkIndex == true) {
+                  for (int i = 0; i < _feed.items.length; i++) {
+                    listLink.add(_feed.items[i].link);
+                  }
+                }
               } else {
                 _destinationIndex = 0;
               }
               // readTutorial(_feed.items[_destinationIndex]);
             });
+          },
+          onLongPress: () {
+            if (_destinationIndex == 0 && checkIndex == false) {
+              for (int i = 0; i < _feed.items.length; i++) {
+                listLink.add(_feed.items[i].link);
+              }
+            }
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ArticleScreen(
+                          link: _feed.items[_destinationIndex].link,
+                          listLink: listLink,
+                          indexArticle: _destinationIndex,
+                        )));
           },
           onPanUpdate: (details) {
             if (details.delta.dx > 0) {

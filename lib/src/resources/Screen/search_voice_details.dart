@@ -98,8 +98,11 @@ class _SearchVoiceState extends State<SearchVoice> {
                                     MaterialPageRoute(
                                         builder: (context) => ArticleScreen(
                                             link: responseArticle
+                                                .children[index]
                                                 .getElementsByTagName("a")[1]
-                                                .attributes['href'])));
+                                                .attributes['href'],
+                                            indexArticle: 1,
+                                            listLink: [])));
                               },
                             ),
                           ),
@@ -107,20 +110,7 @@ class _SearchVoiceState extends State<SearchVoice> {
                       )),
                     ],
                   ),
-                )
-          // ListView.builder(
-          //         itemCount: responseArticle.children.length,
-          //         itemBuilder: (context, int index) => SizedBox(
-          //           child: Card(
-          //             child: ListTile(
-          //               title: Text(responseArticle
-          //                   .children[index].children[1].text
-          //                   .trim()),
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          ),
+                )),
     );
   }
 }
