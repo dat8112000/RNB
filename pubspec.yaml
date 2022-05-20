@@ -79,6 +79,10 @@ flutter:
     - assets/images/main_bottom.png
     - assets/images/background.jpg
     - assets/images/microphone.png
+    - assets/images/splash_bg.svg
+    - assets/images/home_bg.svg
+    - assets/images/microphone.jpg
+    - assets/images/home.svg
   fonts:
     - family: Klasik
       fonts:

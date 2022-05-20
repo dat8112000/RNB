@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:rnb/src/resources/Screen/search_voice_details.dart';
-import 'package:rnb/src/resources/api/speech_api.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SearchVoiceScreen extends StatefulWidget {
@@ -12,10 +12,10 @@ class SearchVoiceScreen extends StatefulWidget {
 }
 
 class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
-  late stt.SpeechToText _speech;
   bool isListening = false;
   String text = '';
   FlutterTts flutterTts = FlutterTts();
+  late stt.SpeechToText _speech;
 
   @override
   void initState() {
@@ -35,11 +35,12 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Search by voice"),
+        title: const Text("Giọng nói")
       ),
       backgroundColor: Colors.white,
       body: Stack(
         children: [
+          SvgPicture.asset("assets/images/home.svg",fit: BoxFit.fill,),
           Positioned(
               bottom: 0,
               left: 0,
@@ -78,11 +79,12 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
                       color: Colors.red,
                     )),
           SizedBox(
-              width: double.infinity,
-              height: double.infinity,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
               child: GestureDetector(
-                onLongPress: () {
-                  toggleRecording();
+                onTap: () {
+                  print("xxx");
+                  _listen();
                 },
               )),
         ],
@@ -90,25 +92,30 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
     );
   }
 
-  Future toggleRecording() => SpeechApi.toggleRecording(
-        onResult: (text) => setState(() => this.text = text),
-        onListening: (isListening) {
-          setState(() => this.isListening = isListening);
-
-          if (!isListening) {
-            Future.delayed(const Duration(seconds: 1), () {
-              if (text.isEmpty) {
-                readTutorial("Vui lòng nhấn lại để nói");
-              } else {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SearchVoice(
-                              voice: text,
-                            )));
-              }
-            });
-          }
-        },
+  void _listen() async {
+    print("xxxxxxxxxxxxxxxxxxxxxxxxx");
+    if (!isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) => print('onStatus: $val'),
+        onError: (val) => print('onError: $val'),
       );
+      if (available) {
+        setState(() => isListening = true);
+        _speech.listen(
+          onResult: (val) => setState(() {
+            text = val.recognizedWords;
+          }),
+        );
+      }
+    } else {
+      setState(() => isListening = false);
+      _speech.stop();
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SearchVoice(
+                    voice: text,
+                  )));
+    }
+  }
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:rnb/src/resources/Screen/search_voice.dart';
 import 'package:rnb/src/resources/Screen/topic_news.dart';
 import 'package:rnb/src/resources/api/speech_api.dart';
 import 'package:rnb/src/resources/widget/substring_highlighted.dart';
+
 import '../utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   FlutterTts flutterTts = new FlutterTts();
   String text =
       'Bạn đang ở trang chủ tìm kiếm, để tìm kiếm theo nội dung hoặc chủ đề vui lòng nhấn vào màn hình để nói';
-  bool isListening = false;
+  bool _isListening = false;
 
   @override
   void initState() {
@@ -46,19 +48,23 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.white,
         body: Stack(
           children: [
-            Positioned(
-                bottom: 0,
-                left: 0,
-                child: Image.asset("assets/images/main_bottom.png", width: 50)),
-            Positioned(
-                top: 0,
-                left: 0,
-                child: Image.asset(
-                  "assets/images/main_top.png",
-                  width: 150,
-                )),
+            SvgPicture.asset(
+              "assets/images/home.svg",
+              fit: BoxFit.fill,
+            ),
+            // Positioned(
+            //     bottom: 0,
+            //     left: 0,
+            //     child: Image.asset("assets/images/main_bottom.png", width: 50)),
+            // Positioned(
+            //     top: 0,
+            //     left: 0,
+            //     child: Image.asset(
+            //       "assets/images/main_top.png",
+            //       width: 150,
+            //     )),
             Center(
-                child: isListening
+                child: _isListening
                     ? Icon(
                         Icons.mic,
                         size: 200,
@@ -71,19 +77,14 @@ class _HomePageState extends State<HomePage> {
                       )),
             Container(
               padding: EdgeInsets.only(top: 20),
-              height: double.infinity,
-              width: double.infinity,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
               child: InkWell(
                 hoverColor: Colors.red,
-                onDoubleTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SearchVoiceScreen()));
-                },
                 onLongPress: () {
                   flutterTts.stop();
                   setState(() {
+                    print("xxx");
                     text = "";
                     toggleRecording();
                   });
@@ -114,7 +115,8 @@ class _HomePageState extends State<HomePage> {
   Future toggleRecording() => SpeechApi.toggleRecording(
         onResult: (text) => setState(() => this.text = text),
         onListening: (isListening) {
-          setState(() => this.isListening = isListening);
+          setState(() => this._isListening = isListening);
+          print(isListening);
           if (!isListening) {
             Future.delayed(Duration(seconds: 1), () {
               text = text.toLowerCase();
@@ -136,7 +138,7 @@ class _HomePageState extends State<HomePage> {
       );
 
   gotoVoice() {
-    Navigator.push(
+    Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => SearchVoiceScreen()));
   }
 
