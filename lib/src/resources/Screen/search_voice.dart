@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:rnb/src/resources/Screen/search_voice_details.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'HomePage.dart';
 
 class SearchVoiceScreen extends StatefulWidget {
   const SearchVoiceScreen({Key? key}) : super(key: key);
@@ -34,13 +35,14 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Giọng nói")
-      ),
+      appBar: AppBar(title: const Text("Giọng nói")),
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          SvgPicture.asset("assets/images/home.svg",fit: BoxFit.fill,),
+          SvgPicture.asset(
+            "assets/images/home.svg",
+            fit: BoxFit.fill,
+          ),
           Positioned(
               bottom: 0,
               left: 0,
@@ -70,20 +72,37 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
               child: isListening
                   ? Icon(
                       Icons.mic,
-                      size: 200,
+                      size: 100,
                       color: Colors.green,
                     )
                   : Icon(
                       Icons.mic_off,
-                      size: 200,
+                      size: 100,
                       color: Colors.red,
                     )),
           SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: GestureDetector(
+
+
+
+                onPanUpdate: (details) {
+                  if (details.delta.dx < 0) {
+                    flutterTts.stop();
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => const HomePage(),
+                      ),
+                          (route) => false,
+                    );
+                  }
+                },
+
+
+
                 onTap: () {
-                  print("xxx");
                   _listen();
                 },
               )),
@@ -93,7 +112,6 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
   }
 
   void _listen() async {
-    print("xxxxxxxxxxxxxxxxxxxxxxxxx");
     if (!isListening) {
       bool available = await _speech.initialize(
         onStatus: (val) => print('onStatus: $val'),

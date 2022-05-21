@@ -41,7 +41,7 @@ CREATE TABLE $tableArticle (
     return article.copy(id: id.toString());
   }
 
-  Future<Article> readNote(int id) async {
+  Future<Article> readNote(String id) async {
     final db = await instance.database;
 
     final maps = await db!.query(

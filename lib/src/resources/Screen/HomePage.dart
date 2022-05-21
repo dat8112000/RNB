@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:rnb/src/resources/Screen/ArticleOffline.dart';
 import 'package:rnb/src/resources/Screen/search_voice.dart';
 import 'package:rnb/src/resources/Screen/topic_news.dart';
 import 'package:rnb/src/resources/api/speech_api.dart';
@@ -41,76 +42,103 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text("Trang chủ"),
-          backgroundColor: Colors.red,
-        ),
-        backgroundColor: Colors.white,
-        body: Stack(
-          children: [
-            SvgPicture.asset(
-              "assets/images/home.svg",
-              fit: BoxFit.fill,
-            ),
-            // Positioned(
-            //     bottom: 0,
-            //     left: 0,
-            //     child: Image.asset("assets/images/main_bottom.png", width: 50)),
-            // Positioned(
-            //     top: 0,
-            //     left: 0,
-            //     child: Image.asset(
-            //       "assets/images/main_top.png",
-            //       width: 150,
-            //     )),
-            Center(
-                child: _isListening
-                    ? Icon(
-                        Icons.mic,
-                        size: 200,
-                        color: Colors.green,
-                      )
-                    : Icon(
-                        Icons.mic_off,
-                        size: 200,
-                        color: Colors.red,
-                      )),
-            Container(
-              padding: EdgeInsets.only(top: 20),
-              height: MediaQuery.of(context).size.height,
-              width: MediaQuery.of(context).size.width,
-              child: InkWell(
-                hoverColor: Colors.red,
-                onLongPress: () {
-                  flutterTts.stop();
-                  setState(() {
-                    print("xxx");
-                    text = "";
-                    toggleRecording();
-                  });
-                },
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(top: 5, left: 10, right: 10),
-                  child: SubstringHighlight(
-                    text: text,
-                    terms: Command.all,
-                    textStyle: TextStyle(
-                      fontSize: 20.0,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    textStyleHighlight: TextStyle(
-                      fontSize: 20.0,
+      appBar: AppBar(
+        title: Text("Trang chủ"),
+        backgroundColor: Colors.amber,
+      ),
+      backgroundColor: Colors.white,
+      body: Stack(
+        children: [
+          // SvgPicture.asset(
+          //   "assets/images/home.svg",
+          //   fit: BoxFit.fill,
+          // ),
+          // Positioned(
+          //     bottom: 0,
+          //     left: 0,
+          //     child: Image.asset("assets/images/main_bottom.png", width: 50)),
+          // Positioned(
+          //     top: 0,
+          //     left: 0,
+          //     child: Image.asset(
+          //       "assets/images/main_top.png",
+          //       width: 150,
+          //     )),
+          Center(
+              child: _isListening
+                  ? Icon(
+                      Icons.mic,
+                      size: 100,
+                      color: Colors.green,
+                    )
+                  : Icon(
+                      Icons.mic_off,
+                      size: 100,
                       color: Colors.red,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                    )),
+          Container(
+            decoration:  BoxDecoration(
+                color: Color(0xFF363f93),
+                borderRadius:  BorderRadius.all(Radius.circular(20.0)),
+              boxShadow:  [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.6),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            margin: EdgeInsets.all(20),
+            width: MediaQuery.of(context).size.width,
+            height: 200,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+              child: SubstringHighlight(
+                text: text,
+                terms: Command.all,
+                textStyle: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
+                ),
+                textStyleHighlight: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.red,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ),
-          ],
-        ),
-      );
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 20),
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: InkWell(
+              hoverColor: Colors.red,
+              onLongPress: () {
+                flutterTts.stop();
+                setState(() {
+                  print("xxx");
+                  text = "";
+                  toggleRecording();
+                });
+              },
+            ),
+          ),
+
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        // isExtended: true,
+        child: Icon(Icons.add),
+        backgroundColor: Colors.green,
+        onPressed: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ArticleOffline()));
+        },
+      ));
 
   Future toggleRecording() => SpeechApi.toggleRecording(
         onResult: (text) => setState(() => this.text = text),
@@ -137,9 +165,14 @@ class _HomePageState extends State<HomePage> {
         },
       );
 
-  gotoVoice() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => SearchVoiceScreen()));
+  gotoVoice()  {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (BuildContext context) => const SearchVoiceScreen(),
+      ),
+          (route) => false,
+    );
   }
 
   gotoSuggest() {

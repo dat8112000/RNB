@@ -76,15 +76,15 @@ class _MainHomeState extends State<MainHome> {
                   )),
               Column(
                 children: [
-                  SizedBox(height: sizeH * 20),
+                  SizedBox(height: sizeH * 10),
                   Text(
                     "WELCOME TO RNB",
-                    style: TextStyle(fontSize: 40,color: Colors.redAccent,fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 30,color: Colors.redAccent,fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: sizeH * 5),
                   Container(
-                      padding: const EdgeInsets.only(left: 30, right: 30),
+                      padding: const EdgeInsets.only(left: 30, right: 30,bottom: 20),
                       child: Center(
                           child: Text(
                               "HỖ TRỢ ĐỌC BÁO CHO NGƯỜI KHIẾM THỊ",

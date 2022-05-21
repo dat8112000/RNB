@@ -83,6 +83,7 @@ flutter:
     - assets/images/home_bg.svg
     - assets/images/microphone.jpg
     - assets/images/home.svg
+    - assets/images/Speech_to_text.png
   fonts:
     - family: Klasik
       fonts:
