@@ -53,7 +53,7 @@ class _ReadArticleDBState extends State<ReadArticleDB> {
               height: height * 8 / 10,
               child: GestureDetector(
                 onPanUpdate: (details) {
-                  if (details.delta.dx > 20) {
+                  if (details.delta.dx > 10) {
                     flutterTts.stop();
                     Navigator.pop(context);
                   }
@@ -85,7 +85,7 @@ class _ReadArticleDBState extends State<ReadArticleDB> {
               children: [
                 GestureDetector(
                   onPanUpdate: (details) {
-                    if (details.delta.dx > 30) {
+                    if (details.delta.dx > 10) {
                       flutterTts.stop();
                       Navigator.pop(context);
                     }
@@ -104,7 +104,7 @@ class _ReadArticleDBState extends State<ReadArticleDB> {
                 ),
                 GestureDetector(
                   onPanUpdate: (details) {
-                    if (details.delta.dx > 30) {
+                    if (details.delta.dx > 10) {
                       flutterTts.stop();
                       Navigator.pop(context);
                     }
@@ -113,6 +113,7 @@ class _ReadArticleDBState extends State<ReadArticleDB> {
                     setState(() {
                       playing = !playing;
                       if (playing == true) {
+                        print("readdddd");
                         readTutorial(widget.content);
                       }
                       if (playing == false) {
@@ -129,7 +130,7 @@ class _ReadArticleDBState extends State<ReadArticleDB> {
                 ),
                 GestureDetector(
                   onPanUpdate: (details) {
-                    if (details.delta.dx > 30) {
+                    if (details.delta.dx > 10) {
                       flutterTts.stop();
                       Navigator.pop(context);
                     }

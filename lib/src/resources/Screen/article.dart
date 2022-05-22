@@ -10,7 +10,12 @@ class ArticleScreen extends StatefulWidget {
   final int indexArticle;
   final List<String> listLink;
 
-  const ArticleScreen({Key? key, required this.link,required this.listLink,required this.indexArticle}) : super(key: key);
+  const ArticleScreen(
+      {Key? key,
+      required this.link,
+      required this.listLink,
+      required this.indexArticle})
+      : super(key: key);
 
   @override
   _ArticleScreenState createState() => _ArticleScreenState();
@@ -26,7 +31,7 @@ class _ArticleScreenState extends State<ArticleScreen> {
   FlutterTts flutterTts = FlutterTts();
   String contentArticle = "";
   List<Article> article = [];
-  int indexArticle=0;
+  int indexArticle = 0;
   String Date = "";
   late Article currentArticle;
 
@@ -72,8 +77,8 @@ class _ArticleScreenState extends State<ArticleScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    indexArticle=widget.indexArticle;
-    print(widget.listLink.length);
+    readTutorial("Nhấn vào màn hình để nghe bài báo");
+    indexArticle = widget.indexArticle;
     extractData(widget.link);
   }
 
@@ -109,13 +114,17 @@ class _ArticleScreenState extends State<ArticleScreen> {
                     }
                   });
                 },
-                child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(
-                      contentArticle,
-                      style: const TextStyle(fontSize: 15),
-                      textAlign: TextAlign.justify,
-                    )),
+                child: contentArticle.isEmpty
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : SingleChildScrollView(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          contentArticle,
+                          style: const TextStyle(fontSize: 15),
+                          textAlign: TextAlign.justify,
+                        )),
               )),
           SizedBox(
             width: width,
@@ -131,10 +140,14 @@ class _ArticleScreenState extends State<ArticleScreen> {
                     }
                   },
                   onTap: () async {
-                    setState(() {
-                      indexArticle--;
-                      refreshArticle();
-                    });
+                    if (indexArticle > 0) {
+                      setState(() {
+                        flutterTts.stop();
+                        playing == false;
+                        indexArticle--;
+                        refreshArticle();
+                      });
+                    }
                   },
                   child: InkWell(
                     child: Icon(
@@ -176,7 +189,10 @@ class _ArticleScreenState extends State<ArticleScreen> {
                     }
                   },
                   onTap: () async {
+                    if(indexArticle<widget.listLink.length-1)
                     setState(() {
+                      flutterTts.stop();
+                      playing = false;
                       indexArticle++;
                       refreshArticle();
                     });
@@ -195,10 +211,11 @@ class _ArticleScreenState extends State<ArticleScreen> {
       ),
     );
   }
-  refreshArticle(){
+
+  refreshArticle() {
     setState(() {
-      contentArticle="";
-      content=[];
+      contentArticle = "";
+      content = [];
       extractData(widget.listLink[indexArticle]);
     });
   }

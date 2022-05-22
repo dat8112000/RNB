@@ -1,8 +1,9 @@
+import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:rnb/src/resources/Screen/search_voice_details.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+
 import 'HomePage.dart';
 
 class SearchVoiceScreen extends StatefulWidget {
@@ -23,10 +24,11 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
     // TODO: implement initState
     super.initState();
     _speech = stt.SpeechToText();
+    readTutorial("Bạn đang ở mục tìm kiếm bằng giọng nói");
   }
 
   Future readTutorial(String text) async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
     await flutterTts.setLanguage("vi-VN");
     await flutterTts.setPitch(0.8);
     await flutterTts.speak(text);
@@ -39,10 +41,6 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
       backgroundColor: Colors.white,
       body: Stack(
         children: [
-          SvgPicture.asset(
-            "assets/images/home.svg",
-            fit: BoxFit.fill,
-          ),
           Positioned(
               bottom: 0,
               left: 0,
@@ -55,38 +53,34 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
                 width: 150,
               )),
           Container(
-            padding: const EdgeInsets.only(top: 10),
-            height: double.infinity,
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  text,
-                  style: const TextStyle(fontSize: 30, fontFamily: "Lora"),
-                )
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Color(0xFF363f93),
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.6),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
               ],
             ),
+            margin: EdgeInsets.all(20),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.width / 3,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                text,
+                style: const TextStyle(fontSize: 15, color: Colors.white),
+              ),
+            ),
           ),
-          Center(
-              child: isListening
-                  ? Icon(
-                      Icons.mic,
-                      size: 100,
-                      color: Colors.green,
-                    )
-                  : Icon(
-                      Icons.mic_off,
-                      size: 100,
-                      color: Colors.red,
-                    )),
           SizedBox(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: GestureDetector(
-
-
-
                 onPanUpdate: (details) {
                   if (details.delta.dx < 0) {
                     flutterTts.stop();
@@ -95,18 +89,28 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
                       MaterialPageRoute(
                         builder: (BuildContext context) => const HomePage(),
                       ),
-                          (route) => false,
+                      (route) => false,
                     );
                   }
                 },
-
-
-
                 onTap: () {
                   _listen();
                 },
               )),
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: AvatarGlow(
+        animate: isListening,
+        glowColor: Colors.blueAccent,
+        endRadius: 75.0,
+        duration: const Duration(milliseconds: 2000),
+        repeatPauseDuration: const Duration(milliseconds: 100),
+        repeat: true,
+        child: FloatingActionButton(
+          onPressed: _listen,
+          child: Icon(isListening ? Icons.mic : Icons.mic_none),
+        ),
       ),
     );
   }
@@ -128,12 +132,16 @@ class _SearchVoiceScreenState extends State<SearchVoiceScreen> {
     } else {
       setState(() => isListening = false);
       _speech.stop();
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => SearchVoice(
-                    voice: text,
-                  )));
+      if (text == "") {
+        readTutorial("Vui lòng nói lại để tìm kiếm bài báo");
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SearchVoice(
+                      voice: text,
+                    )));
+      }
     }
   }
 }

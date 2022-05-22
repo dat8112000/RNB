@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:rnb/src/resources/Screen/ArticleOffline.dart';
 import 'package:rnb/src/resources/Screen/search_voice.dart';
 import 'package:rnb/src/resources/Screen/topic_news.dart';
-import 'package:rnb/src/resources/api/speech_api.dart';
-import 'package:rnb/src/resources/widget/substring_highlighted.dart';
-
-import '../utils.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -19,17 +14,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   FlutterTts flutterTts = new FlutterTts();
   String text =
-      'Bạn đang ở trang chủ tìm kiếm, để tìm kiếm theo nội dung hoặc chủ đề vui lòng nhấn vào màn hình để nói';
+      'Bạn đang ở trang chủ tìm kiếm, nhấn một lần vào màn hình để tìm kiếm bằng giọng nói, hai lần để tìm kiếm bằng gợi ý, giữ màn hình để sang mục các bài báo đã đọc';
   bool _isListening = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    setState(() {
-      String text =
-          'Bạn đang ở trang chủ tìm kiếm, để tìm kiếm theo nội dung hoặc chủ đề vui lòng nhấn vào màn hình để nói';
-    });
     readTutorial(text);
   }
 
@@ -42,141 +33,130 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        title: Text("Trang chủ"),
-        backgroundColor: Colors.amber,
-      ),
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          // SvgPicture.asset(
-          //   "assets/images/home.svg",
-          //   fit: BoxFit.fill,
-          // ),
-          // Positioned(
-          //     bottom: 0,
-          //     left: 0,
-          //     child: Image.asset("assets/images/main_bottom.png", width: 50)),
-          // Positioned(
-          //     top: 0,
-          //     left: 0,
-          //     child: Image.asset(
-          //       "assets/images/main_top.png",
-          //       width: 150,
-          //     )),
-          Center(
-              child: _isListening
-                  ? Icon(
-                      Icons.mic,
-                      size: 100,
-                      color: Colors.green,
-                    )
-                  : Icon(
-                      Icons.mic_off,
-                      size: 100,
-                      color: Colors.red,
-                    )),
-          Container(
-            decoration:  BoxDecoration(
-                color: Color(0xFF363f93),
-                borderRadius:  BorderRadius.all(Radius.circular(20.0)),
-              boxShadow:  [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.6),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: Offset(0, 3), // changes position of shadow
+        appBar: AppBar(
+          title: Text("Trang chủ"),
+          backgroundColor: Colors.amber,
+        ),
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF363f93),
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.6),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  margin: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width / 3,
+                  child: SingleChildScrollView(
+                      padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: Text(
+                        "Nhấn một lần vào màn hình để sang trang tìm kiếm bằng giọng nói",
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      )),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF363f93),
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.6),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  margin: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width / 3,
+                  child: SingleChildScrollView(
+                      padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: Text(
+                        "Nhấn hai lần vào màn hình để sang trang tìm kiếm bằng gợi ý",
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      )),
+                ),
+                Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF363f93),
+                    borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.6),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  margin: EdgeInsets.all(20),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width / 3,
+                  child: SingleChildScrollView(
+                      padding: EdgeInsets.only(top: 5, left: 10, right: 10),
+                      child: Text(
+                        "Nhấn giữ vào màn hình để đến mục bài báo đã đọc",
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      )),
                 ),
               ],
             ),
-            margin: EdgeInsets.all(20),
-            width: MediaQuery.of(context).size.width,
-            height: 200,
-            child: SingleChildScrollView(
-              padding: EdgeInsets.only(top: 5, left: 10, right: 10),
-              child: SubstringHighlight(
-                text: text,
-                terms: Command.all,
-                textStyle: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w400,
-                ),
-                textStyleHighlight: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.red,
-                  fontWeight: FontWeight.w400,
-                ),
+            Container(
+              padding: EdgeInsets.only(top: 20),
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: InkWell(
+                hoverColor: Colors.red,
+                onTap: () {
+                  flutterTts.stop();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => SearchVoiceScreen(),
+                    ),
+                        (route) => false,
+                  );
+                },
+                onDoubleTap: () {
+                  flutterTts.stop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => const TopicNews(),
+                    ),
+                  );
+                },
+                onLongPress: () {
+                  flutterTts.stop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => const ArticleOffline(),
+                    ),
+                  );
+                },
               ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.only(top: 20),
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
-            child: InkWell(
-              hoverColor: Colors.red,
-              onLongPress: () {
-                flutterTts.stop();
-                setState(() {
-                  print("xxx");
-                  text = "";
-                  toggleRecording();
-                });
-              },
-            ),
-          ),
-
-        ],
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        // isExtended: true,
-        child: Icon(Icons.add),
-        backgroundColor: Colors.green,
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ArticleOffline()));
-        },
-      ));
-
-  Future toggleRecording() => SpeechApi.toggleRecording(
-        onResult: (text) => setState(() => this.text = text),
-        onListening: (isListening) {
-          setState(() => this._isListening = isListening);
-          print(isListening);
-          if (!isListening) {
-            Future.delayed(Duration(seconds: 1), () {
-              text = text.toLowerCase();
-              if (text.contains(Command.voice)) {
-                setState(() {
-                  text = "";
-                });
-                gotoVoice();
-              } else if (text.contains(Command.suggest)) {
-                setState(() {
-                  text = "";
-                });
-                gotoSuggest();
-              } else
-                readTutorial("Vui lòng nhấn lại để nói");
-            });
-          }
-        },
+          ],
+        ),
       );
-
-  gotoVoice()  {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (BuildContext context) => const SearchVoiceScreen(),
-      ),
-          (route) => false,
-    );
-  }
-
-  gotoSuggest() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => TopicNews()));
-  }
 }

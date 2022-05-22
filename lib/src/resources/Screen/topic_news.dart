@@ -18,6 +18,13 @@ class _TopicNewsState extends State<TopicNews> {
   FlutterTts flutterTts = FlutterTts();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    readTutorial("Bạn đang ở mục tìm kiếm bài báo theo chủ đề");
+  }
+
+  @override
   Widget build(BuildContext context) {
     final _scrollController = ScrollController();
     return Scaffold(
@@ -25,74 +32,93 @@ class _TopicNewsState extends State<TopicNews> {
         title: Text("Chủ đề"),
         backgroundColor: Colors.blue,
       ),
-      body: GestureDetector(
-        onDoubleTap: () {
-          setState(() {
-            if (Topic.topic.length - 1 > _destinationIndex) {
-              _destinationIndex++;
-            } else {
-              _destinationIndex = 0;
-            }
-            readTutorial(Topic.topic.keys.elementAt(_destinationIndex));
-          });
-        },
-        onPanUpdate: (details) {
-          if (details.delta.dx > 0) {
-            Navigator.pop(context);
-          } else if (details.delta.dx < 0) {
-            flutterTts.stop();
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => const MainHome()));
-          }
-        },
-        onLongPress: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => topicDetails(
-                  link: Topic.topic.values.elementAt(_destinationIndex),
-                ),
-              ));
-        },
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                  child: ListView.builder(
-                controller: _scrollController,
-                itemCount: Topic.topic.length,
-                itemBuilder: (context, index) => SizedBox(
-                  child: Card(
-                    color: index == _destinationIndex
-                        ? Colors.amber
-                        : Colors.white,
-                    child: ListTile(
-                      title: Text(Topic.topic.keys.elementAt(index)),
-                      onLongPress: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => topicDetails(
-                                link: Topic.topic.values.elementAt(_destinationIndex),
-                              ),
-                            ));
-                      },
-                      trailing: Icon(Icons.volume_up),
+      body: Stack(
+        children: [
+          Center(
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                    child: ListView.builder(
+                  controller: _scrollController,
+                  itemCount: Topic.topic.length,
+                  itemBuilder: (context, index) => SizedBox(
+                    child: Card(
+                      color: index == _destinationIndex
+                          ? Colors.amber
+                          : Colors.white,
+                      child: ListTile(
+                        title: Text(Topic.topic.keys.elementAt(index)),
+                        onLongPress: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => topicDetails(
+                                  topic: Topic.topic.keys.elementAt(_destinationIndex),
+                                  link: Topic.topic.values
+                                      .elementAt(_destinationIndex),
+                                ),
+                              ));
+                        },
+                        trailing: Icon(Icons.volume_up),
+                      ),
                     ),
                   ),
-                ),
-              ))
-            ],
+                ))
+              ],
+            ),
           ),
-        ),
+          GestureDetector(
+            onTap: () {
+              flutterTts.stop();
+              setState(() {
+                if (_destinationIndex > 0) {
+                  _destinationIndex--;
+                } else {
+                  _destinationIndex = Topic.topic.length - 1;
+                }
+                readTutorial(Topic.topic.keys.elementAt(_destinationIndex));
+              });
+            },
+            onDoubleTap: () {
+              flutterTts.stop();
+              setState(() {
+                if (Topic.topic.length - 1 > _destinationIndex) {
+                  _destinationIndex++;
+                } else {
+                  _destinationIndex = 0;
+                }
+                readTutorial(Topic.topic.keys.elementAt(_destinationIndex));
+              });
+            },
+            onPanUpdate: (details) {
+              if (details.delta.dx > 0) {
+                Navigator.pop(context);
+              } else if (details.delta.dx < 0) {
+                flutterTts.stop();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const MainHome()));
+              }
+            },
+            onLongPress: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => topicDetails(
+                      topic: Topic.topic.keys.elementAt(_destinationIndex),
+                      link: Topic.topic.values.elementAt(_destinationIndex),
+                    ),
+                  ));
+            },
+          ),
+        ],
       ),
     );
   }
 
   Future readTutorial(String text) async {
-    await Future.delayed(Duration(seconds: 0));
+    await Future.delayed(const Duration(seconds: 0));
     await flutterTts.setLanguage("vi-VN");
-    await flutterTts.setPitch(0.7);
+    await flutterTts.setPitch(0.8);
     await flutterTts.speak(text);
   }
 }

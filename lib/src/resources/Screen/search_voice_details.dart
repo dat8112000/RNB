@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
-import 'package:rnb/src/resources/Screen/article.dart';
+import 'package:rnb/src/resources/Screen/search_voice.dart';
+
+import 'article.dart';
 
 class SearchVoice extends StatefulWidget {
   final String voice;
@@ -19,8 +21,10 @@ class _SearchVoiceState extends State<SearchVoice> {
   String voice = "";
   String linkRequest = "";
   var document;
+  bool checkIndex = false;
   var responseArticle;
   var chuoi = "";
+  List<String> listLink = [];
   bool isLoading = false;
   int _destinationIndex = 0;
   FlutterTts flutterTts = FlutterTts();
@@ -30,6 +34,7 @@ class _SearchVoiceState extends State<SearchVoice> {
     await flutterTts.setLanguage("vi-VN");
     await flutterTts.setPitch(0.8);
     await flutterTts.speak(text);
+    setState(() {});
   }
 
   @override
@@ -39,6 +44,13 @@ class _SearchVoiceState extends State<SearchVoice> {
     voice = widget.voice;
     linkRequest = link + voice;
     extractData(linkRequest);
+    readTutorial("Bạn đang tìm kiếm các bài báo về chủ đề $voice");
+    Future.delayed(const Duration(seconds: 10), () {
+      if (responseArticle == null) {
+        readTutorial(
+            "Không có bài báo liên quan đến nội dung bạn tìm, vuốt từ phải sang trái để đi đến màn hình tìm kiếm");
+      }
+    });
   }
 
   void extractData(voice) async {
@@ -48,7 +60,6 @@ class _SearchVoiceState extends State<SearchVoice> {
         document = parser.parse(response.body);
         responseArticle = document
             .getElementsByClassName('width_common list-news-subfolder')[0];
-        var x = responseArticle.getElementsByTagName("a")[1].attributes['href'];
       });
     }
   }
@@ -57,17 +68,94 @@ class _SearchVoiceState extends State<SearchVoice> {
   Widget build(BuildContext context) {
     final _scrollController = ScrollController();
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Các bài báo tìm kiếm"),
+        elevation: 10,
+      ),
       body: SafeArea(
-          child: document == null
-              ? const Center(
-                  child: CircularProgressIndicator(),
+          child: responseArticle == null
+              ? Stack(
+                  children: [
+                    const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: GestureDetector(
+                        onPanUpdate: (details) {
+                          if (details.delta.dx > 0) {
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const SearchVoiceScreen(),
+                              ),
+                              (route) => false,
+                            );
+                          }
+                        },
+                      ),
+                    )
+                  ],
                 )
               : GestureDetector(
-                  onDoubleTap: () {
+                  onPanUpdate: (details) {
+                    if (details.delta.dx > 0) {
+                      flutterTts.stop();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const SearchVoiceScreen(),
+                        ),
+                        (route) => false,
+                      );
+                    }
+                  },
+                  onTap: () {
+                    flutterTts.stop();
                     setState(() {
+                      checkIndex = true;
+                      if (_destinationIndex > 0) {
+                        _destinationIndex--;
+                        if (listLink.length <
+                                responseArticle.children.length - 1 &&
+                            checkIndex == true) {
+                          for (int i = 0;
+                              i < responseArticle.children.length;
+                              i++) {
+                            listLink.add(responseArticle.children[i]
+                                .getElementsByTagName("a")[1]
+                                .attributes['href']);
+                          }
+                        }
+                      } else {
+                        _destinationIndex = responseArticle.children.length - 1;
+                      }
+                      readTutorial(responseArticle
+                          .children[_destinationIndex].children[1].text
+                          .trim());
+                    });
+                  },
+                  onDoubleTap: () {
+                    flutterTts.stop();
+                    setState(() {
+                      checkIndex = true;
                       if (responseArticle.children.length - 1 >
                           _destinationIndex) {
                         _destinationIndex++;
+                        if (listLink.length <
+                                responseArticle.children.length - 1 &&
+                            checkIndex == true) {
+                          for (int i = 0;
+                              i < responseArticle.children.length;
+                              i++) {
+                            listLink.add(responseArticle.children[i]
+                                .getElementsByTagName("a")[1]
+                                .attributes['href']);
+                          }
+                        }
                       } else {
                         _destinationIndex = 0;
                       }
@@ -76,7 +164,28 @@ class _SearchVoiceState extends State<SearchVoice> {
                           .trim());
                     });
                   },
-                  onLongPress: () {},
+                  onLongPress: () {
+                    flutterTts.stop();
+                    if (_destinationIndex == 0 && checkIndex == false) {
+                      for (int i = 0;
+                          i < responseArticle.children.length;
+                          i++) {
+                        listLink.add(responseArticle.children[i]
+                            .getElementByTagName("a")[1]
+                            .attributes['href']);
+                      }
+                    }
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ArticleScreen(
+                              link: responseArticle.children[_destinationIndex]
+                                  .getElementsByTagName("a")[1]
+                                  .attributes['href'],
+                              listLink: listLink,
+                              indexArticle: _destinationIndex,
+                            )));
+                  },
                   child: Column(
                     children: [
                       Expanded(
@@ -92,18 +201,6 @@ class _SearchVoiceState extends State<SearchVoice> {
                               title: Text(responseArticle
                                   .children[index].children[1].text
                                   .trim()),
-                              onLongPress: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ArticleScreen(
-                                            link: responseArticle
-                                                .children[index]
-                                                .getElementsByTagName("a")[1]
-                                                .attributes['href'],
-                                            indexArticle: 1,
-                                            listLink: [])));
-                              },
                             ),
                           ),
                         ),

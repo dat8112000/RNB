@@ -1,17 +1,20 @@
 import 'dart:convert';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:http/http.dart' as http;
 import 'package:rnb/src/resources/Screen/article.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webfeed/domain/rss_feed.dart';
 import 'package:webfeed/webfeed.dart';
-import 'package:http/http.dart' as http;
-import 'package:url_launcher/url_launcher.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 class topicDetails extends StatefulWidget {
+  final String topic;
   final String link;
 
-  const topicDetails({Key? key, required this.link}) : super(key: key);
+  const topicDetails({Key? key, required this.link, required this.topic})
+      : super(key: key);
 
   @override
   _topicDetailsState createState() => _topicDetailsState();
@@ -81,9 +84,10 @@ class _topicDetailsState extends State<topicDetails> {
   @override
   void initState() {
     super.initState();
+    readTutorial(
+        "Bạn đang tìm kiếm với chủ đề ${widget.topic}, nhấn một lần vào màn hình để quay lại nội dung trước, nhấn hai lần để đến nội dung tiếp theo");
     _refreshKey = GlobalKey<RefreshIndicatorState>();
     updateTitle(widget.link);
-
     load();
   }
 
@@ -180,60 +184,86 @@ class _topicDetailsState extends State<topicDetails> {
       appBar: AppBar(
         title: Text(_title),
       ),
-      body: SizedBox(
-        height: double.infinity,
-        width: double.infinity,
-        child: GestureDetector(
-          onDoubleTap: () {
-            setState(() {
-              checkIndex==true;
-              if (_feed.items.length - 1 > _destinationIndex ) {
-                _destinationIndex++;
-                if (listLink.length < _feed.items.length&&
-                    checkIndex == true) {
+      body: Stack(
+        children: [
+          body(),
+          SizedBox(
+            height: double.infinity,
+            width: double.infinity,
+            child: GestureDetector(
+              onTap: () {
+                flutterTts.stop();
+                setState(() {
+                  checkIndex = true;
+                  if (_destinationIndex > 0) {
+                    _destinationIndex--;
+                    if (listLink.length < _feed.items.length &&
+                        checkIndex == true) {
+                      for (int i = 0; i < _feed.items.length; i++) {
+                        listLink.add(_feed.items[i].link);
+                      }
+                    }
+                  } else {
+                    _destinationIndex = _feed.items.length - 1;
+                  }
+                  readTutorial(_feed.items[_destinationIndex].title);
+                });
+              },
+              onDoubleTap: () {
+                flutterTts.stop();
+                setState(() {
+                  checkIndex = true;
+                  if (_feed.items.length - 1 > _destinationIndex) {
+                    _destinationIndex++;
+                    if (listLink.length < _feed.items.length &&
+                        checkIndex == true) {
+                      print(listLink.length);
+                      for (int i = 0; i < _feed.items.length; i++) {
+                        listLink.add(_feed.items[i].link);
+                      }
+                    }
+                  } else {
+                    _destinationIndex = 0;
+                  }
+                  readTutorial(_feed.items[_destinationIndex].title);
+                });
+              },
+              onLongPress: () {
+                flutterTts.stop();
+                if (_destinationIndex == 0 && checkIndex == false) {
                   for (int i = 0; i < _feed.items.length; i++) {
                     listLink.add(_feed.items[i].link);
                   }
                 }
-              } else {
-                _destinationIndex = 0;
-              }
-              // readTutorial(_feed.items[_destinationIndex]);
-            });
-          },
-          onLongPress: () {
-            if (_destinationIndex == 0 && checkIndex == false) {
-              for (int i = 0; i < _feed.items.length; i++) {
-                listLink.add(_feed.items[i].link);
-              }
-            }
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ArticleScreen(
-                          link: _feed.items[_destinationIndex].link,
-                          listLink: listLink,
-                          indexArticle: _destinationIndex,
-                        )));
-          },
-          onPanUpdate: (details) {
-            if (details.delta.dx > 0) {
-              Navigator.pop(context);
-            } else if (details.delta.dx < 0) {
-              flutterTts.stop();
-              // Navigator.push(
-              //     context, MaterialPageRoute(builder: (context) => MainHome()));
-            }
-          },
-          child: body(),
-        ),
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ArticleScreen(
+                              link: _feed.items[_destinationIndex].link,
+                              listLink: listLink,
+                              indexArticle: _destinationIndex,
+                            )));
+              },
+              onPanUpdate: (details) {
+                if (details.delta.dx > 0) {
+                  Navigator.pop(context);
+                } else if (details.delta.dx < 0) {
+                  flutterTts.stop();
+                  // Navigator.push(
+                  //     context, MaterialPageRoute(builder: (context) => MainHome()));
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
+
   Future readTutorial(String text) async {
     await Future.delayed(const Duration(seconds: 0));
     await flutterTts.setLanguage("vi-VN");
-    await flutterTts.setPitch(0.7);
+    await flutterTts.setPitch(0.8);
     await flutterTts.speak(text);
   }
 }
